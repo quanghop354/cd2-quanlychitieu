@@ -22,3 +22,9 @@ Trong tương lai, dự án có thể được mở rộng với các tính năn
 💳 Kết nối ngân hàng: tự động cập nhật giao dịch
 
 Bên cạnh đó, giao diện người dùng sẽ tiếp tục được cải thiện theo hướng hiện đại, thân thiện và tối ưu trải nghiệm.
+
+# các thành viên
+Bùi khánh Hùng
+Hoàng Quang Hợp
+Đào Vũ Hoàng
+Vũ Hoàng Anh Tú
