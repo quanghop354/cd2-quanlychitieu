@@ -32,9 +32,9 @@ class _RootNavigationState extends State<RootNavigation> {
   bool _isLoggedIn = false;
 
   // Thông tin người dùng (Có thể lưu vào database sau này)
-  String _name = "Hoàng Quang Hợp";
-  String _dob = "30/05/2004";
-  String _email = "quanghop3054@gmail.com";
+  String _name = "  Vũ Hoàng Anh Tú";
+  String _dob = "01/01/2004";
+  String _email = "vuhoanganhtu@gmail.com";
   String _phone = "0999999999";
 
   void _login() => setState(() => _isLoggedIn = true);
