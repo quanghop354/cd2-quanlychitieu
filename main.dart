@@ -20,6 +20,7 @@ class ExpenseManagerApp extends StatelessWidget {
   }
 }
 
+// Lớp điều phối chính: Kiểm tra xem hiển thị trang Auth hay trang Main
 class RootNavigation extends StatefulWidget {
   const RootNavigation({super.key});
 
@@ -29,9 +30,11 @@ class RootNavigation extends StatefulWidget {
 
 class _RootNavigationState extends State<RootNavigation> {
   bool _isLoggedIn = false;
-  String _name = "Hoàng Quang Hợp";
-  String _dob = "30/05/2004";
-  String _email = "quanghop3054@gmail.com";
+
+  // Thông tin người dùng (Có thể lưu vào database sau này)
+  String _name = "Vũ Hoàng Anh Tú";
+  String _dob = "01/01/2004";
+  String _email = "vuhoanganhtu@gmail.com";
   String _phone = "0999999999";
 
   void _login() => setState(() => _isLoggedIn = true);
@@ -62,6 +65,7 @@ class _RootNavigationState extends State<RootNavigation> {
   }
 }
 
+// --- TRANG ĐĂNG NHẬP / ĐĂNG KÝ ---
 class AuthScreen extends StatefulWidget {
   final VoidCallback onLoginSuccess;
   const AuthScreen({super.key, required this.onLoginSuccess});
@@ -154,6 +158,7 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 }
 
+// --- GIAO DIỆN CHÍNH ---
 class MainNavigationScreen extends StatefulWidget {
   final String name, dob, email, phone;
   final VoidCallback onLogout;
@@ -237,10 +242,28 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       ),
       child: Column(
         children: [
-          const CircleAvatar(
-            radius: 55,
-            backgroundColor: Colors.white,
-            backgroundImage: NetworkImage('https://i.pravatar.cc/300'),
+          Stack(
+            children: [
+              const CircleAvatar(
+                radius: 55,
+                backgroundColor: Colors.white,
+                backgroundImage: NetworkImage('https://i.pravatar.cc/300'),
+              ),
+              Positioned(
+                bottom: 0,
+                right: 0,
+                child: CircleAvatar(
+                  backgroundColor: Colors.white,
+                  radius: 18,
+                  child: IconButton(
+                    icon: const Icon(Icons.camera_alt, size: 16, color: Colors.deepPurple),
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Tính năng đổi ảnh đang phát triển!")));
+                    },
+                  ),
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 15),
           Text(widget.name, style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold)),
@@ -325,7 +348,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   }
 }
 
-// --- TRANG THỐNG KÊ (MỚI) ---
+// --- TRANG THỐNG KÊ ---
 class StatisticsScreen extends StatefulWidget {
   const StatisticsScreen({super.key});
 
@@ -334,117 +357,116 @@ class StatisticsScreen extends StatefulWidget {
 }
 
 class _StatisticsScreenState extends State<StatisticsScreen> {
-  int _selectedType = 0; // 0: Chi tiêu, 1: Thu nhập
+  int _selectedType = 0; // 0: Chi phí, 1: Thu nhập
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: const Text('Thống kê tài chính', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text("Thống kê", style: TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
-        backgroundColor: Colors.white,
-        elevation: 0,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            // Bộ chọn Thu nhập/Chi tiêu
+            const SizedBox(height: 10),
+            // Toggle Chi phí / Thu nhập
             Container(
-              padding: const EdgeInsets.all(5),
-              decoration: BoxDecoration(color: Colors.grey[200], borderRadius: BorderRadius.circular(15)),
+              margin: const EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(12),
+              ),
               child: Row(
                 children: [
-                  _buildTypeTab(0, "Chi tiêu"),
-                  _buildTypeTab(1, "Thu nhập"),
+                  _buildToggleButton(0, "Chi phí"),
+                  _buildToggleButton(1, "Thu nhập"),
                 ],
               ),
             ),
-            const SizedBox(height: 30),
-
-            // Biểu đồ tròn giả lập
+            const SizedBox(height: 25),
+            // "Biểu đồ" giả lập (Dùng Widget cơ bản)
             Stack(
               alignment: Alignment.center,
               children: [
                 SizedBox(
-                  height: 220,
-                  width: 220,
+                  height: 180,
+                  width: 180,
                   child: CircularProgressIndicator(
-                    value: _selectedType == 0 ? 0.65 : 1.0,
-                    strokeWidth: 20,
-                    color: _selectedType == 0 ? Colors.redAccent : Colors.greenAccent,
-                    backgroundColor: Colors.grey[300],
+                    value: 0.7,
+                    strokeWidth: 15,
+                    color: Colors.deepPurple,
+                    backgroundColor: Colors.deepPurple.withOpacity(0.1),
                   ),
                 ),
                 Column(
                   children: [
-                    Text(_selectedType == 0 ? "Tổng chi" : "Tổng thu", style: TextStyle(color: Colors.grey[600], fontSize: 16)),
-                    Text(_selectedType == 0 ? "7.500.000đ" : "20.000.000đ",
-                        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                    Text(_selectedType == 0 ? "Tổng chi" : "Tổng thu", 
+                         style: const TextStyle(color: Colors.grey, fontSize: 14)),
+                    Text(_selectedType == 0 ? "12.500.000đ" : "25.000.000đ",
+                         style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   ],
-                )
+                ),
               ],
             ),
-            const SizedBox(height: 40),
-
-            // Danh sách phân loại chi tiết
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
-                Text("Chi tiết phân loại", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                Text("Tháng này", style: TextStyle(color: Colors.deepPurple, fontWeight: FontWeight.bold)),
-              ],
+            const SizedBox(height: 30),
+            // Danh sách hạng mục
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text("Chi tiết hạng mục", 
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 15),
+                  _buildCategoryItem(Icons.restaurant, "Ăn uống", "4.500.000đ", Colors.orange, 0.4),
+                  _buildCategoryItem(Icons.shopping_bag, "Mua sắm", "3.200.000đ", Colors.blue, 0.3),
+                  _buildCategoryItem(Icons.directions_car, "Di chuyển", "1.800.000đ", Colors.green, 0.15),
+                  _buildCategoryItem(Icons.home, "Nhà cửa", "3.000.000đ", Colors.red, 0.25),
+                ],
+              ),
             ),
-            const SizedBox(height: 15),
-            if (_selectedType == 0) ...[
-              _buildStatItem("Ăn uống", "4.500.000đ", 60, Colors.orange, Icons.restaurant),
-              _buildStatItem("Mua sắm", "1.200.000đ", 15, Colors.pink, Icons.shopping_bag),
-              _buildStatItem("Di chuyển", "800.000đ", 10, Colors.blue, Icons.directions_car),
-              _buildStatItem("Khác", "1.000.000đ", 15, Colors.teal, Icons.more_horiz),
-            ] else ...[
-              _buildStatItem("Lương", "15.000.000đ", 75, Colors.green, Icons.wallet),
-              _buildStatItem("Thưởng", "3.000.000đ", 15, Colors.amber, Icons.card_giftcard),
-              _buildStatItem("Đầu tư", "2.000.000đ", 10, Colors.purple, Icons.trending_up),
-            ],
           ],
         ),
       ),
     );
   }
 
-  Widget _buildTypeTab(int index, String label) {
+  Widget _buildToggleButton(int index, String label) {
     bool isSelected = _selectedType == index;
     return Expanded(
       child: GestureDetector(
         onTap: () => setState(() => _selectedType = index),
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 12),
+          padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
             color: isSelected ? Colors.white : Colors.transparent,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: isSelected ? [BoxShadow(color: Colors.black12, blurRadius: 4)] : [],
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: isSelected ? [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4)] : [],
           ),
-          child: Text(
-            label,
-            textAlign: TextAlign.center,
-            style: TextStyle(fontWeight: FontWeight.bold, color: isSelected ? Colors.deepPurple : Colors.grey),
+          child: Center(
+            child: Text(
+              label,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: isSelected ? Colors.deepPurple : Colors.grey,
+              ),
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildStatItem(String title, String amount, double percent, Color color, IconData icon) {
+  Widget _buildCategoryItem(IconData icon, String title, String amount, Color color, double percent) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(15),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(15), border: Border.all(color: Colors.grey.shade100)),
+      margin: const EdgeInsets.only(bottom: 15),
       child: Row(
         children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(color: color.withOpacity(0.1), shape: BoxShape.circle),
+          CircleAvatar(
+            backgroundColor: color.withOpacity(0.1),
             child: Icon(icon, color: color, size: 20),
           ),
           const SizedBox(width: 15),
@@ -455,23 +477,23 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+                    Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
                     Text(amount, style: const TextStyle(fontWeight: FontWeight.bold)),
                   ],
                 ),
-                const SizedBox(height: 8),
-                LinearProgressIndicator(
-                  value: percent / 100,
-                  backgroundColor: Colors.grey[100],
-                  color: color,
-                  minHeight: 6,
-                  borderRadius: BorderRadius.circular(10),
+                const SizedBox(height: 6),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(5),
+                  child: LinearProgressIndicator(
+                    value: percent,
+                    backgroundColor: Colors.grey[200],
+                    color: color,
+                    minHeight: 6,
+                  ),
                 ),
               ],
             ),
           ),
-          const SizedBox(width: 15),
-          Text("${percent.toInt()}%", style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 12)),
         ],
       ),
     );
@@ -481,130 +503,12 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
 // --- DASHBOARD ---
 class ExpenseDashboard extends StatelessWidget {
   const ExpenseDashboard({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
-      appBar: AppBar(
-        title: const Text('Quản lý chi tiêu', style: TextStyle(fontWeight: FontWeight.bold)),
-        centerTitle: true,
-        actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.notifications_none))],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            _buildBalanceCard(),
-            _buildRecentTransactionsHeader(),
-            _buildTransactionList(),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: Colors.deepPurple,
-        child: const Icon(Icons.add, color: Colors.white),
-      ),
-    );
-  }
-
-  Widget _buildBalanceCard() {
-    return Container(
-      margin: const EdgeInsets.all(20),
-      padding: const EdgeInsets.all(25),
-      width: double.infinity,
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(colors: [Colors.deepPurple, Colors.purpleAccent]),
-        borderRadius: BorderRadius.circular(25),
-        boxShadow: [BoxShadow(color: Colors.purple.withOpacity(0.3), blurRadius: 15, offset: const Offset(0, 10))],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text('Tổng số dư', style: TextStyle(color: Colors.white70, fontSize: 16)),
-          const SizedBox(height: 8),
-          const Text('12.500.000 đ', style: TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 25),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _buildIncomeExpense('Thu nhập', '20.000.000', Icons.arrow_upward, Colors.greenAccent),
-              _buildIncomeExpense('Chi tiêu', '7.500.000', Icons.arrow_downward, Colors.redAccent),
-            ],
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRecentTransactionsHeader() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const Text('Giao dịch gần đây', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          TextButton(onPressed: () {}, child: const Text('Xem tất cả')),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTransactionList() {
-    return ListView(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      children: [
-        _buildTransactionItem('Ăn uống', 'Bún chả Hà Nội', '- 50.000', Icons.restaurant, Colors.orange),
-        _buildTransactionItem('Lương', 'Tháng 10/2023', '+ 15.000.000', Icons.wallet, Colors.green),
-        _buildTransactionItem('Di chuyển', 'Grab/Be', '- 35.000', Icons.directions_car, Colors.blue),
-        _buildTransactionItem('Mua sắm', 'Quần áo mới', '- 450.000', Icons.shopping_bag, Colors.pink),
-      ],
-    );
-  }
-
-  Widget _buildIncomeExpense(String title, String amount, IconData icon, Color color) {
-    return Row(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(8),
-          decoration: const BoxDecoration(color: Colors.white24, shape: BoxShape.circle),
-          child: Icon(icon, color: color, size: 20),
-        ),
-        const SizedBox(width: 8),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(title, style: const TextStyle(color: Colors.white70, fontSize: 12)),
-            Text(amount, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-          ],
-        )
-      ],
-    );
-  }
-
-  Widget _buildTransactionItem(String category, String title, String amount, IconData icon, Color color) {
-    return Card(
-      elevation: 0,
-      margin: const EdgeInsets.only(bottom: 12),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      child: ListTile(
-        leading: Container(
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(color: color.withOpacity(0.1), borderRadius: BorderRadius.circular(12)),
-          child: Icon(icon, color: color),
-        ),
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-        subtitle: Text(category, style: TextStyle(color: Colors.grey[600])),
-        trailing: Text(
-          amount,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: amount.startsWith('-') ? Colors.red : Colors.green,
-          ),
-        ),
-      ),
+      appBar: AppBar(title: const Text('Quản lý chi tiêu', style: TextStyle(fontWeight: FontWeight.bold)), centerTitle: true),
+      body: const Center(child: Text("Nội dung trang chủ")),
     );
   }
 }
