@@ -14,3 +14,5 @@ Dự án Ứng dụng Quản Lý Chi Tiêu Cá Nhân được xây dựng nhằm
 => Tiến Độ Dự Án
 - Đã có giao diện đăng ký, đăng nhập
 - Sửa, nhập thông tin người dùng
+- giao diện ví
+- giao diện thống kê
