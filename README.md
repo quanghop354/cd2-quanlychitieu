@@ -1,11 +1,17 @@
 # các thành viên
-Bùi khánh Hùng
+Bùi khánh Hùng: 
+Viết thêm các bài học mới , cập nhật quiz cho từng bài, viết unit test cho các service, 
 
-Hoàng Quang Hợp
+Hoàng Quang Hợp:
+Thiết kế database, hỗ trợ backend, đăng ký, đăng nhập, tìm ghép, xây dựng services
 
-Đào Vũ Hoàng
+Đào Vũ Hoàng: 
+Xây dựng models, quản lý data, services, tham gia xây dựng screens và models
 
-Vũ Hoàng Anh Tú
+Vũ Hoàng Anh Tú: Thiết kế trang khách hàng, lịch đặt, fix lỗi logic, ui
+
+Hoàng Quang Vinh: 
+Backend, xây dựng các screen, code ui/ux, logic, fix lỗi logic, ui
 
 📱 Giới thiệu dự án
 
